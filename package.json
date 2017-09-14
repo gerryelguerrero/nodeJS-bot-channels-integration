@@ -1,0 +1,27 @@
+{
+  "name": "mentor-bot",
+  "version": "1.0.0",
+  "description": "Bot that answers entrepreneur related questions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perez9geraldo/mentor_bot.git"
+  },
+  "keywords": [
+    "bot",
+    "ai",
+    "entrpreneur"
+  ],
+  "author": "Geraldo A. Pérez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/perez9geraldo/mentor_bot/issues"
+  },
+  "homepage": "https://github.com/perez9geraldo/mentor_bot#readme",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
+}
