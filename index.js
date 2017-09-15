@@ -4,7 +4,7 @@
 'use strict'
 
 var express = require('express') // NodeJS module - Enables to use express functions
-var app = express() // Still don't understand this
+var app = express() // Readability
 
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
@@ -25,6 +25,10 @@ app.get('/webhook', function (req, res) {
     else {
         res.sendStatus(400);
     }
+})
+
+app.post('/webhook', function (req, res) {
+    console.log(req)
 })
 
 // [TEST] Logs the port and writes to console
