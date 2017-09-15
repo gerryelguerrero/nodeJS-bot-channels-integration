@@ -4,6 +4,7 @@
 'use strict'
 
 var express = require('express') // NodeJS module - Enables to use express functions
+var bodyParser = require('body-parser')
 var app = express() // Readability
 
 // set the port of our application
@@ -28,7 +29,7 @@ app.get('/webhook', function (req, res) {
 })
 
 app.post('/webhook', function (req, res) {
-    console.log(req)
+    console.log(bodyParser.json(req.body))
 })
 
 // [TEST] Logs the port and writes to console
