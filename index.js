@@ -36,12 +36,13 @@ app.get('/webhook', function (req, res) {
 
 app.post('/webhook', function (req, res) {
     try {
+        console.log("We are going to try to get data")
         const data = JSONbig.parse(req.body);
         console.log(data);   
-    } catch (error) {
+    } catch (err) {
         return res.status(400).json({
             status: "error",
-            error: error
+            error: err
         });
     }
 })
