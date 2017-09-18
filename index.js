@@ -48,7 +48,6 @@ app.post('/webhook', function (req, res) {
             let entries = data.entry;
             entries.forEach((entry) => {
                 let messaging_events = entry.messaging;
-                console.log(messaging_events);
                 if (messaging_events) {
                     messaging_events.forEach((event) => {
                         console.log(event);
@@ -59,8 +58,8 @@ app.post('/webhook', function (req, res) {
                                     qs: {access_token: FB_PAGE_ACCESS_TOKEN},
                                     method: 'POST',
                                     json: {
-                                        recipient: {id: entry.id},
-                                        message: 'Hey back!'
+                                        recipient: {id: event.sender.id},
+                                        message: 'Nigga hey! -__-'
                                     }
                                 }, (error, response) => {
                                     if (error) {
