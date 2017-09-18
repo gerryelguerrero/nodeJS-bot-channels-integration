@@ -48,8 +48,10 @@ app.post('/webhook', function (req, res) {
             let entries = data.entry;
             entries.forEach((entry) => {
                 let messaging_events = entry.messaging;
+                console.log(messaging_events);
                 if (messaging_events) {
                     messaging_events.forEach((event) => {
+                        console.log(event);
                         if (event.message && !event.message.is_echo) {
                             return new Promise((resolve, reject) => {
                                 request({
