@@ -18,6 +18,33 @@ var app = express() // Initialization for better readability of the code
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 8080;
 
+class Bot {
+
+    sendMessageBack(event) {
+        return new Promise((resolve, reject) => {
+            request({
+                url: 'https://graph.facebook.com/v2.6/me/messages',
+                qs: {access_token: FB_PAGE_ACCESS_TOKEN},
+                method: 'POST',
+                json: {
+                    recipient: {id: event.sender.id},
+                    message: 'Nigga hey! -__-'
+                }
+            }, (error, response) => {
+                if (error) {
+                    console.error('Error sending action: ', error);
+                    reject(error);
+                } else if (response.body.error) {
+                    console.error('Error: ', response.body.error);
+                    reject(new Error(response.body.error));
+                }
+
+                resolve();
+            });
+        });
+    }
+}
+
 app.use(bodyParser.text({type: 'application/json'}))
 
 // respond with message when a GET request is made to the homepage 
@@ -39,6 +66,8 @@ app.get('/webhook', function (req, res) {
 
 // respond with the message when a POST request is made to the webhook
 app.post('/webhook', function (req, res) {
+    var bot = new Bot;
+    
     try {
         console.log("We are going to try to get data")
         const data = JSON.parse(req.body);
@@ -52,27 +81,7 @@ app.post('/webhook', function (req, res) {
                     messaging_events.forEach((event) => {
                         console.log(event);
                         if (event.message && !event.message.is_echo) {
-                            return new Promise((resolve, reject) => {
-                                request({
-                                    url: 'https://graph.facebook.com/v2.6/me/messages',
-                                    qs: {access_token: FB_PAGE_ACCESS_TOKEN},
-                                    method: 'POST',
-                                    json: {
-                                        recipient: {id: event.sender.id},
-                                        message: 'Nigga hey! -__-'
-                                    }
-                                }, (error, response) => {
-                                    if (error) {
-                                        console.error('Error sending action: ', error);
-                                        reject(error);
-                                    } else if (response.body.error) {
-                                        console.error('Error: ', response.body.error);
-                                        reject(new Error(response.body.error));
-                                    }
-                    
-                                    resolve();
-                                });
-                            });
+                            bot.sendMessageBack(event);
                         } else if (event.postback && event.postback.payload) {
                             console.log('Something different');
                         }
