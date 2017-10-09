@@ -6,35 +6,24 @@
  /**
   * NodeJS module - Enables to use express functions
   */
-var express = require('express')
-var bodyParser = require('body-parser')
-var request = require('request')
-var JSONbig = require('json-bigint')
+const express = require('express');
+const bodyParser = require('body-parser');
+const request = require('request');
 
-var app = express() // Initialization for better readability of the code
+const APIAI_ACCESS_TOKEN = process.env.APIAI_ACCESS_TOKEN;
+const APIAI_LANG = process.env.APIAI_LANG || 'en';
+
+const FacebookBot = require('./google-api/facebook/facebookbot');
+const FacebookBotConfig = require('./google-api/facebook/facebookbotconfig');
+
+const botConfig = new FacebookBotConfig(APIAI_ACCESS_TOKEN, APIAI_LANG);
+const bot = new FacebookBot(botConfig);
+
+const app = express();// Initialization for better readability of the code
 
 // Constant varibles
 const token = process.env.FB_PAGE_ACCESS_TOKEN
-
-// Temp Methods
-function sendTextMessage(sender, text) {
-    let messageData = { text:text }
-    request({
-	    url: 'https://graph.facebook.com/v2.6/me/messages',
-	    qs: {access_token:token},
-	    method: 'POST',
-		json: {
-		    recipient: {id:sender},
-			message: messageData,
-		}
-	}, function(error, response, body) {
-		if (error) {
-		    console.log('Error sending messages: ', error)
-		} else if (response.body.error) {
-		    console.log('Error: ', response.body.error)
-	    }
-    })
-}
+const verify_token = process.env.FB_VERIFY_TOKEN
 
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
@@ -55,7 +44,7 @@ app.get('/', function(req, res) {
 // respond with validation when a GET request is made to the webhook
 app.get('/webhook', function (req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === 'my_special_mentor_bot_is_the_token') {
+        req.query['hub.verify_token'] === verify_token) {
             res.send(req.query['hub.challenge']);
     }
     else {
@@ -71,7 +60,7 @@ app.post('/webhook', function (req, res) {
 	    let sender = event.sender.id
 	    if (event.message && event.message.text) {
 		    let text = event.message.text
-		    sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+		    bot.sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
 	    }
     }
     res.sendStatus(200)
