@@ -40,6 +40,8 @@ module.exports = class FacebookBot {
             requestSource: "fb"
         };
 
+        var token = botConfig.facebookAccessToken;
+
         this._apiaiService = apiai(botConfig.apiaiAccessToken, apiaiOptions);
         this._sessionIds = new Map();
         this._messagesDelay = 200;
