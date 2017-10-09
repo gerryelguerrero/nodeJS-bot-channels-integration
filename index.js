@@ -40,13 +40,17 @@ function sendTextMessage(sender, text) {
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 8080;
 
-app.use(bodyParser.text({type: 'application/json'}))
+// Process application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: false}))
+
+// Process application/json
+app.use(bodyParser.json())
 
 // respond with message when a GET request is made to the homepage 
 app.get('/', function(req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'}); // Setting content type for head
     res.end('This is the main page of the bot api!');
-});
+})
 
 // respond with validation when a GET request is made to the webhook
 app.get('/webhook', function (req, res) {
@@ -61,7 +65,7 @@ app.get('/webhook', function (req, res) {
 
 // respond with the message when a POST request is made to the webhook
 app.post('/webhook', function (req, res) {
-    console.log(req); //[0].messaging);
+    console.log(req.body.entry); //[0].messaging);
     // let messaging_events = req.body.entry[0].messaging
     // for (let i = 0; i < messaging_events.length; i++) {
 	//     let event = req.body.entry[0].messaging[i]
