@@ -13,8 +13,8 @@ const request = require('request');
 const APIAI_ACCESS_TOKEN = process.env.APIAI_ACCESS_TOKEN;
 const APIAI_LANG = process.env.APIAI_LANG || 'en';
 
-const FacebookBot = require('./facebookbot');
-const FacebookBotConfig = require('./facebookbotconfig');
+const FacebookBot = require('/google-api/facebook/facebookbot');
+const FacebookBotConfig = require('/google-api/facebook/facebookbotconfig');
 
 const botConfig = new FacebookBotConfig(APIAI_ACCESS_TOKEN, APIAI_LANG);
 const bot = new FacebookBot(botConfig);
