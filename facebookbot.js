@@ -40,14 +40,12 @@ module.exports = class FacebookBot {
             requestSource: "fb"
         };
 
-        var token = botConfig.facebookAccessToken;
-
         this._apiaiService = apiai(botConfig.apiaiAccessToken, apiaiOptions);
         this._sessionIds = new Map();
         this._messagesDelay = 200;
     }
 
-    sendTextMessage(sender, text) {
+    sendTextMessage(sender, text, token) {
         let messageData = { text:text }
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',

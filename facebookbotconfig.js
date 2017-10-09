@@ -24,17 +24,8 @@ module.exports = class FacebookBotConfig {
         this._apiaiLang = value;
     }
 
-    get facebookAccessToken() {
-        return this._facebookAccessToken;
-    }
-
-    set facebookAccessToken(value) {
-        this._facebookAccessToken = value;
-    }
-
-    constructor(apiaiAccessToken, apiaiLang, facebookAccessToken) {
+    constructor(apiaiAccessToken, apiaiLang) {
         this._apiaiAccessToken = apiaiAccessToken;
         this._apiaiLang = apiaiLang;
-        this._facebookAccessToken = facebookAccessToken;
     }
 }

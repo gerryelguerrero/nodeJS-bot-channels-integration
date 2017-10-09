@@ -19,7 +19,7 @@ const FB_VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN
 const FacebookBot = require('./facebookbot');
 const FacebookBotConfig = require('./facebookbotconfig');
 
-const botConfig = new FacebookBotConfig(APIAI_ACCESS_TOKEN, APIAI_LANG, FB_PAGE_ACCESS_TOKEN);
+const botConfig = new FacebookBotConfig(APIAI_ACCESS_TOKEN, APIAI_LANG);
 const bot = new FacebookBot(botConfig);
 
 const app = express();// Initialization for better readability of the code
@@ -59,7 +59,7 @@ app.post('/webhook', function (req, res) {
 	    let sender = event.sender.id
 	    if (event.message && event.message.text) {
 		    let text = event.message.text
-		    bot.sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+		    bot.sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200), FB_PAGE_ACCESS_TOKEN)
 	    }
     }
     res.sendStatus(200)
