@@ -61,7 +61,7 @@ app.get('/webhook', function (req, res) {
 
 // respond with the message when a POST request is made to the webhook
 app.post('/webhook', function (req, res) {
-    console.log(req.body); //[0].messaging);
+    console.log(req.body.entry[0].messanging); //[0].messaging);
     // let messaging_events = req.body.entry[0].messaging
     // for (let i = 0; i < messaging_events.length; i++) {
 	//     let event = req.body.entry[0].messaging[i]
