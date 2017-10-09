@@ -3,47 +3,42 @@
  */
 'use strict'
 
-const FB_PAGE_ACCESS_TOKEN = 'EAAFT9mFPdlYBAATuUVY9rwqAgBi1xJJTSYmRJbOGVyFCZBdzJYVjCIFrvsMCSeUlpVgEy1VOWSZBiSfOg91tgWpfVjSWPw9fJXOswAmziEDiy3q7Ispbu9MuxAeZCK82h8TuDDTyT8dp5jLvTZCxMif6lIPJcUyC3FZBKPUDzE9oHPE3pVMxX'
-
  /**
   * NodeJS module - Enables to use express functions
   */
 var express = require('express')
 var bodyParser = require('body-parser')
 var request = require('request')
+var JSONbig = require('json-bigint')
 
 var app = express() // Initialization for better readability of the code
+
+// Constant varibles
+const token = process.env.FB_PAGE_ACCESS_TOKEN
+
+// Temp Methods
+function sendTextMessage(sender, text) {
+    let messageData = { text:text }
+    request({
+	    url: 'https://graph.facebook.com/v2.6/me/messages',
+	    qs: {access_token:token},
+	    method: 'POST',
+		json: {
+		    recipient: {id:sender},
+			message: messageData,
+		}
+	}, function(error, response, body) {
+		if (error) {
+		    console.log('Error sending messages: ', error)
+		} else if (response.body.error) {
+		    console.log('Error: ', response.body.error)
+	    }
+    })
+}
 
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 8080;
-
-class Bot {
-
-    sendMessageBack(event) {
-        return new Promise((resolve, reject) => {
-            request({
-                url: 'https://graph.facebook.com/v2.6/me/messages',
-                qs: {access_token: FB_PAGE_ACCESS_TOKEN},
-                method: 'POST',
-                json: {
-                    recipient: {id: event.sender.id},
-                    message: 'Nigga hey! -__-'
-                }
-            }, (error, response) => {
-                if (error) {
-                    console.error('Error sending action: ', error);
-                    reject(error);
-                } else if (response.body.error) {
-                    console.error('Error: ', response.body.error);
-                    reject(new Error(response.body.error));
-                }
-
-                resolve();
-            });
-        });
-    }
-}
 
 app.use(bodyParser.text({type: 'application/json'}))
 
@@ -66,35 +61,16 @@ app.get('/webhook', function (req, res) {
 
 // respond with the message when a POST request is made to the webhook
 app.post('/webhook', function (req, res) {
-    var bot = new Bot;
-    
-    try {
-        console.log("We are going to try to get data")
-        const data = JSON.parse(req.body);
-        console.log(data);
-
-        if (data.entry) {
-            let entries = data.entry;
-            entries.forEach((entry) => {
-                let messaging_events = entry.messaging;
-                if (messaging_events) {
-                    messaging_events.forEach((event) => {
-                        console.log(event);
-                        if (event.message && !event.message.is_echo) {
-                            bot.sendMessageBack(event);
-                        } else if (event.postback && event.postback.payload) {
-                            console.log('Something different');
-                        }
-                    });
-                }
-            });
-        }
-    } catch (err) {
-        return res.status(400).json({
-            status: "error",
-            error: err
-        });
+    let messaging_events = req.body.entry[0].messaging
+    for (let i = 0; i < messaging_events.length; i++) {
+	    let event = req.body.entry[0].messaging[i]
+	    let sender = event.sender.id
+	    if (event.message && event.message.text) {
+		    let text = event.message.text
+		    sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+	    }
     }
+    res.sendStatus(200)
 })
 
 // [TEST] Logs the port and writes to console
