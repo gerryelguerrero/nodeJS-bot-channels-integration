@@ -6,66 +6,30 @@
  /**
   * NodeJS module - Enables to use express functions
   */
-const express = require('express');
-const bodyParser = require('body-parser');
-const request = require('request');
+var RtmClient = require('@slack/client').RtmClient;
+var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
+var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 
-const APIAI_ACCESS_TOKEN = process.env.APIAI_ACCESS_TOKEN;
-const APIAI_LANG = process.env.APIAI_LANG || 'en';
+const SLACK_API_TOKEN = process.env.SLACK_API_TOKEN;
 
-const FB_PAGE_ACCESS_TOKEN = process.env.FB_PAGE_ACCESS_TOKEN
-const FB_VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN
+var rtm = new RtmClient(SLACK_API_TOKEN);
+rtm.start();
 
-const FacebookBot = require('./facebookbot');
-const FacebookBotConfig = require('./facebookbotconfig');
+let channel;
 
-const botConfig = new FacebookBotConfig(APIAI_ACCESS_TOKEN, APIAI_LANG);
-const bot = new FacebookBot(botConfig);
-
-const app = express();// Initialization for better readability of the code
-
-// set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var port = process.env.PORT || 8080;
-
-// Process application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
-
-// Process application/json
-app.use(bodyParser.json())
-
-// respond with message when a GET request is made to the homepage 
-app.get('/', function(req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'}); // Setting content type for head
-    res.end('This is the main page of the bot api!');
-})
-
-// respond with validation when a GET request is made to the webhook
-app.get('/webhook', function (req, res) {
-    if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
-            res.send(req.query['hub.challenge']);
+rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
+    for (const c of rtmStartData.channels) {
+        if (c.is_member && c.name ==='mentorbot_test') { channel = c.id }
     }
-    else {
-        res.sendStatus(400);
-    }
-})
+    console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}`);
+});
 
-// respond with the message when a POST request is made to the webhook
-app.post('/webhook', function (req, res) {
-    let messaging_events = req.body.entry[0].messaging
-    for (let i = 0; i < messaging_events.length; i++) {
-	    let event = req.body.entry[0].messaging[i]
-	    let sender = event.sender.id
-	    if (event.message && event.message.text) {
-		    let text = event.message.text
-		    bot.sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200), FB_PAGE_ACCESS_TOKEN)
-	    }
-    }
-    res.sendStatus(200)
-})
+// rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
+//     rtm.sendMessage("Hello!", channel);
+// });
 
-// [TEST] Logs the port and writes to console
-app.listen(port, function() {
-    console.log('Our app is running on http://localhost:' + port);
+rtm.on(RTM_EVENTS.MESSAGE, function(message) {
+    if (message.channel === channel) {
+        rtm.sendMessage("Yo yo yo! My boy<@" + message.user + "> is in the house (channel)", message.channel);
+    }
 });

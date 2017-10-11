@@ -1,3 +1,13 @@
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules/
+
+# Asset directory
+assets/
+
+# SQLite DB
+data/
+
+# Norris Bot tutorials
+# https://scotch.io/tutorials/building-a-slack-bot-with-node-js-and-chuck-norris-super-powers
+lib/
