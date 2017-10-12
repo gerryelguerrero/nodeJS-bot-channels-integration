@@ -16,12 +16,15 @@ var rtm = new RtmClient(SLACK_API_TOKEN);
 rtm.start();
 
 let channel;
+let bot;
 
 rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
     for (const c of rtmStartData.channels) {
         if (c.is_member && c.name ==='mentorbot_test') { channel = c.id }
     }
     console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}`);
+
+    bot = rtmStartData.self.id;
 });
 
 // rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
@@ -30,6 +33,9 @@ rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
 
 rtm.on(RTM_EVENTS.MESSAGE, function(message) {
     if (message.channel === channel) {
-        rtm.sendMessage("Yo yo yo! My boy<@" + message.user + "> is in the house (channel)", message.channel);
+        if (message.user !== bot)
+        {
+            rtm.sendMessage("Yo yo yo! My boy<@" + message.user + "> is in the house (channel)", message.channel);
+        }
     }
 });
