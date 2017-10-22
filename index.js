@@ -6,7 +6,9 @@
 /**
  * Modules
  */
-const config = require('./config'); // Import configurations (Tokens, Secrets, etc.)
+if (process.env.ENVIRONMENT == 'development') {
+    const config = require('./config'); // Import configurations (Tokens, Secrets, etc.)    
+}
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
