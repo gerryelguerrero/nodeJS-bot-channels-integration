@@ -15,14 +15,18 @@ const uuid = require('uuid');
 
 const app = express(); // Express app init (Readability Convention)
 
+const FB_PAGE_TOKEN = config.FB_VERIFY_TOKEN || process.env.FB_PAGE_TOKEN;
+const FB_VERIFY_TOKEN = config.FB_VERIFY_TOKEN || process.enc.FB_VERIFY_TOKEN;
+const FB_APP_SECRET = config.FB_APP_SECRET || process.env.FB_APP_SECRET;
+
 // Configuration Validation
-if (!config.FB_PAGE_TOKEN) {
+if (!FB_PAGE_TOKEN) {
 	throw new Error('missing FB_PAGE_TOKEN');
 }
-if (!config.FB_VERIFY_TOKEN) {
+if (!FB_VERIFY_TOKEN) {
 	throw new Error('missing FB_VERIFY_TOKEN');
 }
-if (!config.FB_APP_SECRET) {
+if (!FB_APP_SECRET) {
 	throw new Error('missing FB_APP_SECRET');
 }
 
@@ -50,7 +54,7 @@ app.get('/', function(req, res) {
 // respond with validation when a GET request is made to the webhook
 app.get('/webhook', function (req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === config.FB_VERIFY_TOKEN) {
+        req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
             res.send(req.query['hub.challenge']);
     }
     else {
@@ -75,7 +79,7 @@ app.post('/webhook', function (req, res) {
 	    let sender = event.sender.id
 	    if (event.message && event.message.text) {
 		    let text = event.message.text
-		    sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200), FB_PAGE_ACCESS_TOKEN)
+		    sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200), FB_PAGE_TOKEN)
 	    }
     }
     res.sendStatus(200)
@@ -123,7 +127,7 @@ function verifyRequestSignature(req, res, buf) {
 		var method = elements[0];
 		var signatureHash = elements[1];
 
-		var expectedHash = crypto.createHmac('sha1', config.FB_APP_SECRET)
+		var expectedHash = crypto.createHmac('sha1', FB_APP_SECRET)
 			.update(buf)
 			.digest('hex');
 
