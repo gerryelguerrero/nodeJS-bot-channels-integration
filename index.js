@@ -146,6 +146,6 @@ function verifyRequestSignature(req, res, buf) {
 }
 
 // [TEST] Logging the port starts our server
-app.listen(port, function() {
-    console.log('Our app is running on http://localhost:' + port);
+app.listen(process.env.PORT, function() {
+    console.log('Our app is running on http://localhost:' + process.env.PORT);
 });
