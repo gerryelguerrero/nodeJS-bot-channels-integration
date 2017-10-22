@@ -4,7 +4,7 @@
 'use strict'
 
  /**
-  * NodeJS module - Enables to use express functions
+  * Modules
   */
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
@@ -26,10 +26,6 @@ rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
 
     bot = rtmStartData.self.id;
 });
-
-// rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
-//     rtm.sendMessage("Hello!", channel);
-// });
 
 rtm.on(RTM_EVENTS.MESSAGE, function(message) {
     if (message.channel === channel) {
