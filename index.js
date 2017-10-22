@@ -14,7 +14,7 @@ const uuid = require('uuid');
 
 const app = express(); // Express app init (Readability Convention)
 const ENVIRONMENT = process.env.ENVIRONMENT || 'development';
-console.log(ENVIRONMENT);
+
 if (ENVIRONMENT == 'development') {
     const config = require('./config'); // Import configurations (Tokens, Secrets, etc.)    
     var FB_PAGE_TOKEN = config.FB_PAGE_TOKEN;
@@ -101,7 +101,7 @@ function sendTextMessage(sender, text) {
     let messageData = {text:text}
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token: config.FB_PAGE_TOKEN},
+        qs: {access_token: FB_PAGE_TOKEN},
         method: 'POST',
         json: {
             recipient: {id:sender},
