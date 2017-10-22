@@ -14,7 +14,7 @@ if (process.env.ENVIRONMENT == 'development') {
     
 } else {
     const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN;
-    const FB_VERIFY_TOKEN = process.enc.FB_VERIFY_TOKEN;
+    const FB_VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN;
     const FB_APP_SECRET = process.env.FB_APP_SECRET;    
 }
 const express = require('express');
