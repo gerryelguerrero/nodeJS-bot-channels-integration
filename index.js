@@ -8,6 +8,14 @@
  */
 if (process.env.ENVIRONMENT == 'development') {
     const config = require('./config'); // Import configurations (Tokens, Secrets, etc.)    
+    const FB_PAGE_TOKEN = config.FB_VERIFY_TOKEN;
+    const FB_VERIFY_TOKEN = config.FB_VERIFY_TOKEN;
+    const FB_APP_SECRET = config.FB_APP_SECRET;
+    
+} else {
+    const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN;
+    const FB_VERIFY_TOKEN = process.enc.FB_VERIFY_TOKEN;
+    const FB_APP_SECRET = process.env.FB_APP_SECRET;    
 }
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -16,10 +24,6 @@ const crypto = require('crypto');
 const uuid = require('uuid');
 
 const app = express(); // Express app init (Readability Convention)
-
-const FB_PAGE_TOKEN = config.FB_VERIFY_TOKEN || process.env.FB_PAGE_TOKEN;
-const FB_VERIFY_TOKEN = config.FB_VERIFY_TOKEN || process.enc.FB_VERIFY_TOKEN;
-const FB_APP_SECRET = config.FB_APP_SECRET || process.env.FB_APP_SECRET;
 
 // Configuration Validation
 if (!FB_PAGE_TOKEN) {
